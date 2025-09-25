@@ -1,3 +1,12 @@
+// Bouton retour à l'accueil
+document.addEventListener("DOMContentLoaded", () => {
+    const btnRetour = document.getElementById("btnRetourAccueil");
+    if (btnRetour) {
+        btnRetour.addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+    }
+});
 const params = new URLSearchParams(window.location.search);
 let name = params.get("name") || localStorage.getItem("userName") || null;
 const client_name = document.getElementById("client_name");
@@ -37,6 +46,7 @@ async function commanderPlat(plat) {
             name: plat.plate,
             image: plat.image,
             createdAt: new Date().toISOString(),
+            sqlId: data && data.order && data.order.id ? data.order.id : null,
         };
 
         try {

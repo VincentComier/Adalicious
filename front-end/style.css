@@ -150,3 +150,7 @@ p {
 }
 
 #suivi-card button:hover { opacity: 0.95; }
+
+#btnRetourAccueil {
+    margin:20px 0;
+}

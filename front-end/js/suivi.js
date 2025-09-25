@@ -49,8 +49,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const btn = document.createElement('button');
       btn.textContent = 'Supprimer';
-      btn.addEventListener('click',() => {
-        removeOrder(order.orderId);
+      btn.addEventListener('click', () => {
+        deleteOrder(order.orderId);
       });
       card.appendChild(btn);
 
@@ -58,36 +58,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  function removeOrder(orderId) {
+
+  async function deleteOrder(orderId) {
     const orders = loadOrders();
-    const filtered = orders.filter(o => o.orderId !== orderId);
-    saveOrders(filtered);
-    renderOrders();
+    const order = orders.find(o => o.orderId === orderId);
+    if (!order || !order.sqlId) {
+      alert("Commande introuvable ou non enregistrée dans la bdd");
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:3000/orders-db/${order.sqlId}`, { 
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (data.ok) {
+        const filtered = orders.filter(o => o.orderId !== orderId);
+        saveOrders(filtered);
+        renderOrders();
+        console.log("Commande supprimée avec succès");
+      } else {
+        console.log("Erreur lors de la suppression de la commande: " + (data.error || 'Erreur inconnue'));
+      } 
+    } catch (e) {
+      console.log("Erreur lors de la suppression de la commande:", e);
+    }
   }
 
   renderOrders();
 });
-
-async function deleteOrder(orderId) {
-  const orders = loadOrders();
-  const order = orders.find(o => o.orderId === orderId);
-  if (!order || !order.sqlId) {
-    alert("Commande introuvable ou non enregistrée dans la bdd");
-    return;
-  }
-  try {
-    const res = await fetch(`http://localhost:3000/orders-db/${order.sqlId}`, { 
-      method: 'DELETE'
-    });
-    const data = await res.json();
-    if (data.ok) {
-      const filtered = orders.filter(o => o.orderId !== orderId);
-      saveOrders(filtered);
-      console.log("Commande supprimée avec succès");
-    } else {
-      console.log("Erreur lors de la suppression de la commande: " + (data.error || 'Erreur inconnue'));
-    } 
-} catch (e) {
-  console.log("Erreur lors de la suppression de la commande:", e);
-}}
 
