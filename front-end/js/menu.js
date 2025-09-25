@@ -15,13 +15,13 @@ if (client_name) client_name.textContent = name ? `Bonjour ${name} !` : 'Bonjour
 async function commanderPlat(plat) {
     try {
         const clientNameToSend = name || localStorage.getItem('userName') || 'invité';
-        const resp = await fetch("http://localhost:3000/orders", {
+        const resp = await fetch("http://localhost:3000/orders-db", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: plat.id, plate: plat.plate, clientName: clientNameToSend }),
+            body: JSON.stringify({ menu_id: plat.id, client_name: clientNameToSend }),
         });
 
-        console.log('POST /orders status:', resp.status, resp.statusText);
+        console.log('POST /orders-db status:', resp.status, resp.statusText);
 
         let data = null;
         try { data = await resp.json(); } catch (err) {  }
